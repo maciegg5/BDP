@@ -1,3 +1,5 @@
+-- zestaw zadań ćwiczenia 1 
+
 -- 1
 CREATE DATABASE firma;
 
@@ -186,9 +188,41 @@ JOIN ksiegowosc.wynagrodzenie w ON p.id_pracownika = w.id_pracownika
 JOIN ksiegowosc.pensja pe ON w.id_pensji = pe.id_pensji
 GROUP BY pe.stanowisko;
 
+-- l)
+SELECT pe.stanowisko, AVG(pe.kwota) AS średnia_pensja, MIN(pe.kwota) AS minimalna_pensja, MAX(pe.kwota) AS maksymalna_pensja
+FROM ksiegowosc.wynagrodzenie w
+JOIN ksiegowosc.pensja pe ON w.id_pensji = pe.id_pensji
+WHERE pe.stanowisko = 'Kierownik'
+GROUP BY pe.stanowisko;
 
 -- m)
 SELECT SUM(pe.kwota) + SUM(pr.kwota)
 FROM ksiegowosc.wynagrodzenie w
 JOIN ksiegowosc.pensja pe ON w.id_pensji = pe.id_pensji
 JOIN ksiegowosc.premia pr ON w.id_premii = pr.id_premii;
+
+-- F)
+SELECT pe.stanowisko, SUM(pe.kwota) + SUM(pr.kwota) AS suma_wynagrodzeń
+FROM ksiegowosc.wynagrodzenie w
+JOIN ksiegowosc.pensja pe ON w.id_pensji = pe.id_pensji
+JOIN ksiegowosc.premia pr ON w.id_premii = pr.id_premii
+GROUP BY pe.stanowisko;
+
+-- G)
+SELECT pe.stanowisko, COUNT(pr.id_premii) AS ilosc_premii
+FROM ksiegowosc.wynagrodzenie w
+JOIN ksiegowosc.pensja pe ON w.id_pensji = pe.id_pensji
+JOIN ksiegowosc.premia pr ON w.id_premii = pr.id_premii
+GROUP BY pe.stanowisko;
+
+-- H)
+DELETE FROM ksiegowosc.pracownicy
+WHERE id_pracownika IN(
+
+SELECT p.id_pracownika
+FROM ksiegowosc.pracownicy p
+JOIN ksiegowosc.wynagrodzenie w ON p.id_pracownika = w.id_pracownika
+JOIN ksiegowosc.pensja pe ON w.id_pensji = pe.id_pensji
+WHERE pe.kwota < 1200
+
+);
